@@ -93,12 +93,12 @@ namespace Stringy.Tests
 		[Fact]
 		public void TestComparisonOperators()
 		{
-			var str = "{= != < > <= >=}";
+			var str = "{== != < > <= >=}";
 
 			var lexer = new StandardLexer(str);
 
 			lexer.GetNextToken(); // {
-			Assert.True(lexer.GetNextToken() == new Token("=", TokenType.EQ));
+			Assert.True(lexer.GetNextToken() == new Token("==", TokenType.EQ));
 			lexer.GetNextToken(); // Whitespace
 			Assert.True(lexer.GetNextToken() == new Token("!=", TokenType.NEQ));
 			lexer.GetNextToken(); // Whitespace

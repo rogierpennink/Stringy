@@ -151,7 +151,7 @@ namespace Stringy.Tests
 		[Fact]
 		public void TestNullIdentifier()
 		{
-			const string template = "{object = null}";
+			const string template = "{object == null}";
 
 			var interpreter = GetInterpreter();
 
@@ -328,6 +328,106 @@ namespace Stringy.Tests
 
 			Assert.Equal("1, 2, 3", result);
 		}
+
+	    [Fact]
+	    public void TestBooleanExpressionEvaluation()
+	    {
+	        const string expression = "a == b";
+
+	        var symbolTable = new SymbolTable();
+            symbolTable.Set("a", 5);
+            symbolTable.Set("b", 5);
+
+	        var interpreter = GetInterpreter(symbolTable);
+
+	        var result = interpreter.InterpretExpression<bool>(expression);
+
+            Assert.True(result);
+	    }
+
+        [Fact]
+	    public void TestBooleanTernaryExpressionEvaluation()
+	    {
+	        const string expression = "a == 5 ? true : false";
+
+	        var symbolTable = new SymbolTable();
+	        symbolTable.Set("a", 5);
+
+	        var interpreter = GetInterpreter(symbolTable);
+
+	        var result = interpreter.InterpretExpression<bool>(expression);
+
+	        Assert.True(result);
+        }
+
+        [Fact]
+	    public void TestIntegerExpressionEvaluation()
+        {
+            const string expression = "25 * 4 + 150";
+
+            var interpreter = GetInterpreter();
+            var result = interpreter.InterpretExpression<int>(expression);
+                
+            Assert.Equal(250, result);
+        }
+
+	    [Fact]
+	    public void TestMultipleAddOpExpressionEvaluation()
+	    {
+	        const string expression = "25 + 5 + 100 - 30";
+
+	        var interpreter = GetInterpreter();
+	        var result = interpreter.InterpretExpression<int>(expression);
+
+	        Assert.Equal(100, result);
+        }
+
+        [Fact]
+	    public void TestMultipleMulOpExpressionEvaluation()
+	    {
+	        const string expression = "3 * 3 / 3 * 3";
+
+	        var interpreter = GetInterpreter();
+	        var result = interpreter.InterpretExpression<int>(expression);
+
+	        Assert.Equal(9, result);
+        }
+
+        [Fact]
+	    public void TestTernaryIntegerExpressionEvaluation()
+	    {
+	        const string expression = "25 * 4 - 1 >= 100 ? 500 : 1000";
+
+	        var interpreter = GetInterpreter();
+	        var result = interpreter.InterpretExpression<int>(expression);
+
+	        Assert.Equal(1000, result);
+        }
+
+        [Fact]
+	    public void TestDoubleExpressionEvaluation()
+        {
+            const string expression = "25 * 4 / 1000.0";
+
+	        var interpreter = GetInterpreter();
+	        var result = interpreter.InterpretExpression<double>(expression);
+
+	        Assert.Equal(0.1, result);
+        }
+
+        [Fact]
+	    public void TestBooleanOperatorPrecedence()
+	    {
+            // If AND takes precedence over OR, this will be true, but if OR takes
+            // precedence over AND, this will be false. AND should take precedence
+            // over OR.
+	        const string expression = "false && false || true";
+
+	        var interpreter = GetInterpreter();
+	        var result = interpreter.InterpretExpression<bool>(expression);
+
+	        Assert.True(result);
+        }
 
 		private string HelloWorld()
 		{

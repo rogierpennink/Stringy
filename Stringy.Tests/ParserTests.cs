@@ -128,7 +128,7 @@ namespace Stringy.Tests
 		[Fact]
 		public void TestNullIdentifier()
 		{
-			const string template = "{null = null}";
+			const string template = "{null == null}";
 
 			var parser = new StandardParser();
 			var rootNode = parser.Parse(new StandardLexer(template));

@@ -2,6 +2,17 @@
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+    <Authors>Rogier Pennink</Authors>
+    <Company>Rogier Pennink</Company>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <Description>Stringy is a simple and light-weight runtime string interpolation engine. The purpose of the library is to provide something that's easier to use and more light-weight than Runtime Text Templates or RazorEngine, but a little more powerful than string.Replace().</Description>
+    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageTags>string interpolation template language runtime text stringy</PackageTags>
+    <RepositoryUrl></RepositoryUrl>
+    <RepositoryType></RepositoryType>
+    <PackageProjectUrl>https://github.com/rogierpennink/Stringy</PackageProjectUrl>
+    <PackageLicenseUrl>https://github.com/rogierpennink/Stringy/blob/master/LICENSE</PackageLicenseUrl>
+    <PackageId>stringy</PackageId>
   </PropertyGroup>
 
   <ItemGroup>

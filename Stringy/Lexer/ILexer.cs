@@ -4,7 +4,7 @@
 	{
 		Token GetNextToken();
 
-		void Reset(string input);
+		void Reset(string input, bool treatInputAsString = false);
 
 		void Reset();
 	}

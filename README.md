@@ -2,6 +2,20 @@
 
 Stringy is a simple and light-weight runtime string interpolation engine. Originally built as an utility for a text-based game, the purpose of the library is to provide something that's easier to use and more light-weight than Runtime Text Templates or RazorEngine, but a little more powerful than `string.Replace()`.
 
+On top of string interpolation, Stringy can also be used to facilitate simple expression evaluation. For example, suppose you want to store an arbitrary conditional statement as a "saved filter" for some list of items. You could write your filtering code like so:
+
+```C#
+string filterStr = "person.Age < 18 && person.Firstname.StartsWith('A')"; // Fetch from database
+IStringy engine = new Stringy();
+
+// Assume "people" is an IEnumerable of Person objects
+var people = GetListOfPersonObjects();
+var filteredPeople = people.Where(p => engine.Set("person", p).EvaluateExpression<bool>(filterStr));
+
+// filteredPeople contains only those Persons with a first name
+// that starts with the letter A, and an age lower than 18
+```
+
 ## Use cases
 
 Stringy favours light string replacement and basic logic and branching needs. If you want to produce large bodies of (formatted) text using complex logic, you will probably find it worth it to use a full templating solution like RazorEngine. Use Stringy if:
@@ -49,13 +63,13 @@ Using `engine.Set()` you can add any object and its methods and properties will 
 ```C#
 int num1 = 6;
 int num2 = 7;
-const string template = "{a} + {b} = {a + b}";
+const string template = "{a} * {b} = {a * b}";
 
 IStringy engine = new Stringy();
 engine.Set("a", num1);
 engine.Set("b", num2);
 
-// Prints: 6 + 7 = 42
+// Prints: 6 * 7 = 42
 Console.WriteLine(engine.Execute(template));
 ```
 

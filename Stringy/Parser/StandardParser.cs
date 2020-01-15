@@ -8,15 +8,21 @@ namespace Stringy.Parser
 {
 	internal class StandardParser : IParser
 	{
-		private readonly TokenType[] MulOp = { TokenType.MUL, TokenType.DIV, TokenType.AND };
+		private readonly TokenType[] MulOp = { TokenType.MUL, TokenType.DIV };
 
-		private readonly TokenType[] AddOp = { TokenType.PLUS, TokenType.MINUS, TokenType.OR };
+		private readonly TokenType[] AddOp = { TokenType.PLUS, TokenType.MINUS};
 
 		private readonly TokenType[] RelOp =
 		{
 			TokenType.EQ, TokenType.NEQ, TokenType.LT, TokenType.GT,
 			TokenType.LTE, TokenType.GTE
 		};
+
+	    private readonly TokenType[] AndOp = {TokenType.AND};
+
+	    private readonly TokenType[] OrOp = {TokenType.OR};
+
+
 
 		private Token CurrentToken;
 
@@ -40,6 +46,21 @@ namespace Stringy.Parser
 
 			return node;
 		}
+
+	    public AstNode ParseStatement(ILexer lexer)
+	    {
+	        Lexer = lexer;
+
+            // Move to first token
+	        Next();
+
+	        var node = ParseStatement();
+
+            if (CurrentToken.Type != TokenType.EOF)
+                Error();
+
+	        return node;
+	    }
 
 		private void Error(string message = null)
 		{
@@ -125,7 +146,7 @@ namespace Stringy.Parser
 			if (CurrentToken.Type == TokenType.IDENTIFIER && CurrentToken.Value == "each")
 				return ParseEachLoop();
 
-			var node = ParseExpression();
+			var node = ParseBooleanExpression();
 
 			EatWhiteSpace();
 
@@ -133,7 +154,6 @@ namespace Stringy.Parser
 			{
 				return ParseTernary(node);
 			}
-
 
 			return node;
 		}
@@ -207,35 +227,85 @@ namespace Stringy.Parser
 			return new BranchAstNode(expressionNode, ifBody);
 		}
 
-		/// <summary>
-		/// expression			: simple_expression
-		///						| simple_expression relop simple_expression
-		/// </summary>
-		private AstNode ParseExpression()
-		{
-			var node = ParseSimpleExpression();
+        /// <summary>
+        /// boolean_expression              : simple_boolean_expression (orop simple_boolean_expression)*
+        /// </summary>
+        /// <returns></returns>
+	    private AstNode ParseBooleanExpression()
+	    {
+	        var node = ParseSimpleBooleanExpression();
 
-			EatWhiteSpace();
+	        EatWhiteSpace();
 
-			while (RelOp.Contains(CurrentToken.Type))
-			{
-				var token = CurrentToken;
+	        while (OrOp.Contains(CurrentToken.Type))
+	        {
+	            var token = CurrentToken;
 
-				Eat(CurrentToken.Type);
+	            Eat(CurrentToken.Type);
 
-				EatWhiteSpace();
+	            EatWhiteSpace();
 
-				node = new BinaryOperationAstNode(token, node, ParseSimpleExpression());
-			}
+	            node = new BinaryOperationAstNode(token, node, ParseSimpleBooleanExpression());
 
-			return node;
-		}
+	            EatWhiteSpace();
+	        }
 
-		/// <summary>
-		/// simple_expression	: term
-		///						| term addop term
-		/// </summary>
-		private AstNode ParseSimpleExpression()
+	        return node;
+        }
+
+        /// <summary>
+        /// simple_boolean_expression       : expression (andop expression)*
+        /// </summary>
+	    private AstNode ParseSimpleBooleanExpression()
+	    {
+	        var node = ParseExpression();
+
+	        EatWhiteSpace();
+
+	        while (AndOp.Contains(CurrentToken.Type))
+	        {
+	            var token = CurrentToken;
+
+	            Eat(CurrentToken.Type);
+
+	            EatWhiteSpace();
+
+	            node = new BinaryOperationAstNode(token, node, ParseExpression());
+
+	            EatWhiteSpace();
+	        }
+
+	        return node;
+        }
+
+	    /// <summary>
+	    /// expression			: simple_math_expression (relop simple_math_expression)*
+	    /// </summary>
+	    private AstNode ParseExpression()
+	    {
+	        var node = ParseSimpleMathExpression();
+
+	        EatWhiteSpace();
+
+	        // If instead of while?
+	        while (RelOp.Contains(CurrentToken.Type))
+	        {
+	            var token = CurrentToken;
+
+	            Eat(CurrentToken.Type);
+
+	            EatWhiteSpace();
+
+	            node = new BinaryOperationAstNode(token, node, ParseSimpleMathExpression());
+	        }
+
+	        return node;
+	    }
+
+        /// <summary>
+        /// simple_math_expression	: term (addop term)*
+        /// </summary>
+        private AstNode ParseSimpleMathExpression()
 		{
 			var node = ParseTerm();
 
@@ -250,6 +320,8 @@ namespace Stringy.Parser
 				EatWhiteSpace();
 
 				node = new BinaryOperationAstNode(token, node, ParseTerm());
+
+                EatWhiteSpace();
 			}
 
 			return node;
@@ -275,6 +347,10 @@ namespace Stringy.Parser
 				EatWhiteSpace();
 
 				node = new BinaryOperationAstNode(token, node, ParseFactor());
+
+                // Since there could be multiple MULOPs in a row, eat whitespace so
+                // we have a chance of catching the next MULOP and staying in the loop
+                EatWhiteSpace();
 			}
 
 			return node;

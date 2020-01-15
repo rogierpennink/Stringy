@@ -6,5 +6,8 @@ namespace Stringy.Parser
 	internal interface IParser
 	{
 		AstNode Parse(ILexer lexer);
+
+	    AstNode ParseStatement(ILexer lexer);
+
 	}
 }

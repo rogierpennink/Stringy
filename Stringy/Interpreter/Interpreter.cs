@@ -248,6 +248,17 @@ namespace Stringy.Interpreter
 			var tree = Parser.Parse(new StandardLexer(template));
 			return tree.Accept(this).ToString();
 		}
+
+	    public TResult InterpretExpression<TResult>(string expression, ErrorMode errMode = ErrorMode.ThrowExceptions)
+	    {
+	        CurrentErrorMode = errMode;
+
+            // TODO: In order to support ternaries, we have to parse a statement. Ideally ternaries
+            // are part of expression parsing, so that we can actually call ParseExpression here, because
+            // the side effect of parsing a statement is that we can also parse loops.
+	        var tree = Parser.ParseStatement(new StandardLexer(expression, true));
+	        return (TResult)tree.Accept(this);
+	    }
 		
 		private Exception Error(AstNode node, string message = null)
 		{

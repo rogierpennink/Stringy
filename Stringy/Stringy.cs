@@ -23,14 +23,23 @@ namespace Stringy
             Interpreter = new Interpreter.Interpreter(new StandardParser(), SymbolTable);
         }
 
+        /// <inheritdoc />
         public string Execute(string template, ErrorMode errMode = ErrorMode.ThrowExceptions)
         {
             return Interpreter.Interpret(template, errMode);
         }
 
-        public void Set<TClass>(string variableName, TClass value)
+        /// <inheritdoc />
+        public TResult EvaluateExpression<TResult>(string expression, ErrorMode errMode = ErrorMode.ThrowExceptions)
+        {
+            return Interpreter.InterpretExpression<TResult>(expression, errMode);
+        }
+
+        /// <inheritdoc />
+        public IStringy Set<TClass>(string variableName, TClass value)
         {
             SymbolTable.Set(variableName, value);
+            return this;
         }
     }
 }

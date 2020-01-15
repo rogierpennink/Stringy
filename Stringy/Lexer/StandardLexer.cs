@@ -19,12 +19,14 @@ namespace Stringy.Lexer
 			{"*", new Token("*", TokenType.MUL)},
 			{"/", new Token("/", TokenType.DIV)},
 			{"!", new Token("!", TokenType.NOT)},
-			{"=", new Token("=", TokenType.EQ)},
+			{"==", new Token("==", TokenType.EQ)},
 			{"!=", new Token("!=", TokenType.NEQ)},
 			{">", new Token(">", TokenType.GT)},
 			{"<", new Token("<", TokenType.LT)},
 			{">=", new Token(">=", TokenType.GTE)},
 			{"<=", new Token("<=", TokenType.LTE)},
+		    {"&&", new Token("&&", TokenType.AND)},
+		    {"||", new Token("||", TokenType.OR)},
 			{".", new Token(".", TokenType.DOT)},
 			{",", new Token(",", TokenType.COMMA)},
 			{"?", new Token("?", TokenType.QM)},
@@ -49,12 +51,17 @@ namespace Stringy.Lexer
 			Reset(input);
 		}
 
-		public void Reset(string input)
+	    public StandardLexer(string input, bool treatInputAsProgram)
+	    {
+            Reset(input, treatInputAsProgram);
+	    }
+
+		public void Reset(string input, bool treatInputAsProgram = false)
 		{
 			_input = input;
 			_pos = 0;
 			_currentChar = _input[_pos];
-			_isInProgram = false;
+			_isInProgram = treatInputAsProgram;
 		}
 
 		public void Reset()
@@ -96,7 +103,7 @@ namespace Stringy.Lexer
 				if (IsValidStartOfIdentifierChar(_currentChar))
 					return GetIdentifierToken();
 
-				if (TokenMap.ContainsKey(token))
+				if (TokenMap.ContainsKey(token) || TokenMap.ContainsKey(token + Peek()))
 				{
 					var position = _pos;
 
@@ -267,11 +274,6 @@ namespace Stringy.Lexer
 					number += _currentChar;
 					Next();
 				}
-			}
-
-			if (!char.IsWhiteSpace(_currentChar) && !TokenMap.ContainsKey(_currentChar + string.Empty))
-			{
-				return GetTextLiteralToken(number);
 			}
 
 			return new Token(number, type, position);
