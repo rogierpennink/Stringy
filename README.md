@@ -1,6 +1,6 @@
 # Stringy
 
-Stringy is a simple and light-weight runtime string interpolation engine. Originally built as an utility for a text-based game, the purpose of the library is to provide something that's easier to use and more light-weight than Runtime Text Templates or RazorEngine, but a little more powerful than `string.Replace()`.
+Stringy is a simple and light-weight runtime string interpolation engine. Built as a utility for a text-based game, the purpose of the library is to provide something that's easier to use and more light-weight than Runtime Text Templates or RazorEngine, but a little more powerful than `string.Replace()`.
 
 On top of string interpolation, Stringy can also be used to facilitate simple expression evaluation. For example, suppose you want to store an arbitrary conditional statement as a "saved filter" for some list of items. You could write your filtering code like so:
 
@@ -24,7 +24,9 @@ Stringy favours light string replacement and basic logic and branching needs. If
 
 * You keep strings in a database/persistent storage and your substitution needs are greater than what can be achieved with regular expressions and `string.Replace()`.
 
-* You need to execute LINQ and/or custom methods on your model objects from your string templates.
+* You need to execute methods and access properties on your model objects from inside your string templates.
+
+* You need to evaluate stored/persisted expressions
 
 ## Installation
 
