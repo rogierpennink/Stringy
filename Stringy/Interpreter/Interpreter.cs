@@ -74,6 +74,8 @@ namespace Stringy.Interpreter
 					return value * -1;
 				case TokenType.PLUS:
 					return value * 1;
+				case TokenType.NOT:
+                    return !value;
 			}
 
 			throw Error(node);
