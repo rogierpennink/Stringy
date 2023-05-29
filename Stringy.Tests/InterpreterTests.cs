@@ -346,7 +346,7 @@ namespace Stringy.Tests
 	    }
 
         [Fact]
-	    public void TestBooleanTernaryExpressionEvaluation()
+	    public void TestBooleanTernaryExpressionTrueEvaluation()
 	    {
 	        const string expression = "a == 5 ? true : false";
 
@@ -358,6 +358,51 @@ namespace Stringy.Tests
 	        var result = interpreter.InterpretExpression<bool>(expression);
 
 	        Assert.True(result);
+        }
+
+		[Fact]
+        public void TestBooleanTernaryExpressionFalseEvaluation()
+        {
+            const string expression = "a == 5 ? true : false";
+
+            var symbolTable = new SymbolTable();
+            symbolTable.Set("a", 6);
+
+            var interpreter = GetInterpreter(symbolTable);
+
+            var result = interpreter.InterpretExpression<bool>(expression);
+
+            Assert.False(result);
+        }
+
+		[Fact]
+        public void TestBooleanNegationExpressionTrueEvaluation()
+        {
+            const string expression = "!condition";
+
+            var symbolTable = new SymbolTable();
+            symbolTable.Set("condition", false);
+
+            var interpreter = GetInterpreter(symbolTable);
+
+            var result = interpreter.InterpretExpression<bool>(expression);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void TestBooleanNegationExpressionFalseEvaluation()
+        {
+            const string expression = "!condition";
+
+            var symbolTable = new SymbolTable();
+            symbolTable.Set("condition", true);
+
+            var interpreter = GetInterpreter(symbolTable);
+
+            var result = interpreter.InterpretExpression<bool>(expression);
+
+            Assert.False(result);
         }
 
         [Fact]

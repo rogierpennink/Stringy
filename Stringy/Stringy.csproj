@@ -6,17 +6,26 @@
     <Company>Rogier Pennink</Company>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Description>Stringy is a simple and light-weight runtime string interpolation engine. The purpose of the library is to provide something that's easier to use and more light-weight than Runtime Text Templates or RazorEngine, but a little more powerful than string.Replace().</Description>
-    <PackageReleaseNotes>Initial release</PackageReleaseNotes>
+    <PackageReleaseNotes>Adds a fix in order to properly support negations</PackageReleaseNotes>
     <PackageTags>string interpolation template language runtime text stringy</PackageTags>
     <RepositoryUrl></RepositoryUrl>
     <RepositoryType></RepositoryType>
     <PackageProjectUrl>https://github.com/rogierpennink/Stringy</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/rogierpennink/Stringy/blob/master/LICENSE</PackageLicenseUrl>
     <PackageId>stringy</PackageId>
-    <AssemblyVersion>2.0.0.0</AssemblyVersion>
-    <FileVersion>2.0.0.0</FileVersion>
-    <Version>2.0.0</Version>
+    <AssemblyVersion>2.0.1.0</AssemblyVersion>
+    <FileVersion>2.0.1.0</FileVersion>
+    <Version>2.0.1</Version>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+    <Title>Stringy</Title>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.CSharp" Version="4.5.0" />

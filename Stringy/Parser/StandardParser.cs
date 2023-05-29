@@ -431,7 +431,7 @@ namespace Stringy.Parser
 
 				case TokenType.NOT:
 					Eat(TokenType.NOT);
-					node = ParseFactor();
+                    node = new UnaryOperationAstNode(token, ParseFactor());
 					break;
 			}
 
